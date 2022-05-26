@@ -1,0 +1,75 @@
+  /*
+  switch (uint8_t(charCode)){
+    case 0x90: drawRusCharB (0, x, y); break;//А  (144) (0x90)
+    case 0xB0: drawRusCharS (0, x, y); break;//а  (176) (0xB0)
+    
+    case 0x91: drawRusCharB (1, x, y); break;//Б  (145) (0x91)
+    case 0xB1: drawRusCharS (1, x, y); break;//б  (177) (0xB1)
+    
+    case 0x92: drawRusCharB (2, x, y); break;//В  (146) (0x92)
+    case 0xB2: drawRusCharS (2, x, y); break;//в  (178) (0xB2)
+
+    case 0x93: drawRusCharB (3, x, y); break;//Г  (147) (0x93)
+    case 0xB3: drawRusCharS (3, x, y); break;//г  (179) (0xB3)
+
+    case 0x94: drawRusCharB (4, x, y); break;//Д  (148) (0x94)
+    case 0xB4: drawRusCharS (4, x, y); break;//д  (180) (0xB4)
+  
+    case 0x95: drawRusCharB (5, x, y); break;//Е  (149) (0x95)
+    case 0xB5: drawRusCharS (0, x, y); break;//е  (181) (0xB5)
+
+    case 0x96: drawRusCharB (6, x, y); break;//Ж  (150) (0x96)
+    case 0xB6: drawRusCharS (0, x, y); break;//ж  (182) (0xB6)
+
+    case 0x97: drawRusCharB (7, x, y); break;//З  (151) (0x97)
+    case 0xB7: drawRusCharS (0, x, y); break;//з  (183) (0xB7)
+
+    case 0x98: drawRusCharB (8, x, y); break;//И  (152) (0x98)
+    case 0xB8: drawRusCharS (0, x, y); break;//и  (184) (0xB8)
+
+    case 0x99: drawRusCharB (8, x, y); break;//Й  (153) (0x99)
+    case 0xB9: drawRusCharS (0, x, y); break;//й  (185) (0xB9)
+
+    case 0x9A: drawRusCharB (9, x, y); break;//К  (154) (0x9A)
+    case 0xBA: drawRusCharS (0, x, y); break;//к  (186) (0xBA)
+
+    case 0x9B: drawRusCharB(10, x, y); break;//Л  (155) (0x9B)
+    case 0xBB: drawRusCharS (0, x, y); break;//л  (187) (0xBB)
+
+    case 0x9C: drawRusCharB(11, x, y); break;//М  (156) (0x9C)
+    case 0xBC: drawRusCharS (0, x, y); break;//м  (188) (0xBC)
+
+    case 0x9D: drawRusCharB(12, x, y); break;//Н  (157) (0x9D)
+    case 0xBD: drawRusCharS (0, x, y); break;//н  (189) (0xBD)
+
+    case 0x9E: drawRusCharB(13, x, y); break;//О  (158) (0x9E)
+    case 0xBE: drawRusCharS (0, x, y); break;//о  (190) (0xBE)
+
+    case 0x9F: drawRusCharB(14, x, y); break;//П  (159) (0x9F)
+    case 0xBF: drawRusCharS (0, x, y); break;//п  (191) (0xBF)
+
+    case 0xA0: drawRusCharB(15, x, y); break;//Р  (160) (0xA0)
+    case 0x80: drawRusCharS (0, x, y); break;//р  (128) (0x80)
+
+    case 0xA1: drawRusCharB(16, x, y); break;//С  (161) (0xA1)
+    case 0x81: drawRusCharS (0, x, y); break;//с  (129) (0x81)
+
+    case 0xA2: drawRusCharB(17, x, y); break;//Т  (162) (0xA2)
+    case 0x82: drawRusCharS (1, x, y); break;//т  (130) (0x82)
+
+    case 0xA3: drawRusCharB(18, x, y); break;//У  (163) (0xA3)
+    case 0x83: drawRusCharS (2, x, y); break;//у  (131) (0x83)
+
+    case 0xA4: drawRusCharB(19, x, y); break;//ф  (164) (0xA4)
+    case 0x84: drawRusCharS (3, x, y); break;//Ф  (132) (0x84)
+
+    case 0xA4: drawRusCharB(19, x, y); break;//Х  (164) (0xA4)
+    case 0x84: drawRusCharS (3, x, y); break;//х  (132) (0x84)
+
+    case 0xA4: drawRusCharB(19, x, y); break;//Ц  (164) (0xA4)
+    case 0x84: drawRusCharS (3, x, y); break;//ц  (132) (0x84)
+
+    case 0xA4: drawRusCharB(19, x, y); break;//Ч  (164) (0xA4)
+    case 0x84: drawRusCharS (3, x, y); break;//ч  (132) (0x84)
+  } 
+  */

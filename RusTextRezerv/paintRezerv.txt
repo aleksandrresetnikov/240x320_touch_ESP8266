@@ -1,0 +1,199 @@
+#include "Adafruit_GFX.h"     // Библиотека обработчика графики
+#include "Adafruit_ILI9341.h" // Программные драйвера для дисплеев ILI9341
+#include "URTouch.h"          // Библиотека для работы с сенсорным экраном
+#include <SD.h>
+
+#define SD_CS 2               // Пин CD карты
+
+#define TFT_DC 9              // Пин подключения вывода D/C дисплея
+#define TFT_CS 10             // Пин подключения вывода CS дисплея
+// Для управления очисткой экрана с помощью кнопки RESET на Arduino подключить вывод дисплея RESET через резистор к пину RESET на плате Arduino
+// Для Mega 2560 вывод дисплея RESET, если не подключен в пин RESET на Arduino, подключить в 3.3V (без резистора), либо в 5V (с резистором)
+#define TFT_RST 8             // Пин подключения вывода RESET (Если подключен к питанию или кнопке, то эту строку закомментировать, а следующую раскомментировать)
+// #define TFT_RST -1         // Если вывод дисплея RESET подключен к питанию или через кнопку RESET на Arduino
+// Uno Hardware SPI
+#define TFT_MISO 12           // Пин подключения вывода дисплея SDO(MISO)
+#define TFT_MOSI 11           // Пин подключения вывода дисплея SDI(MOSI)
+#define TFT_CLK 13            // Пин подключения вывода дисплея SCK
+/* 
+//  Mega 2560 Hardware SPI
+#define TFT_MOSI 51           // Пин подключения вывода дисплея SDI(MOSI)
+#define TFT_CLK 52            // Пин подключения вывода дисплея SCK
+#define TFT_MISO 50           // Пин подключения вывода дисплея SDO(MISO)
+*/
+
+
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_RST, TFT_MISO);  // Создаем объект дисплея и сообщаем библиотеке распиновку для работы с графикой
+
+#define t_SCK 3               // Пин подключения вывода дисплея T_CLK
+#define t_CS 4                // Пин подключения вывода дисплея T_CS
+#define t_MOSI 5              // Пин подключения вывода дисплея T_DIN
+#define t_MISO 6              // Пин подключения вывода дисплея T_DOUT
+#define t_IRQ 7               // Пин подключения вывода дисплея T_IRQ
+
+URTouch ts(t_SCK, t_CS, t_MOSI, t_MISO, t_IRQ); // Создаем объект сенсорного модуля и сообщаем библиотеке распиновку для работы с ним
+
+void setup(){
+  Serial.begin(9600);
+  
+  tft.begin();                      // Инициализируем начало работы с графическим дисплеем
+  tft.setRotation(1);               // Переводим дисплей в альбомную ориентацию
+  tft.fillScreen(0);
+ 
+  ts.InitTouch();                   // Инициализируем сенсорный модуль дисплея 
+  ts.setPrecision(PREC_EXTREME);    // Определяем необходимую точность обработки нажатий: PREC_LOW - низкая, PREC_MEDIUM - средняя, PREC_HI - высокая, PREC_EXTREME - максимальная
+}
+ 
+void loop()
+{
+  paint();
+}
+
+boolean startVivoPaint = true;
+
+unsigned long buttonTimer = millis() + 150;
+
+unsigned long selectColor = ILI9341_YELLOW;
+int sizeBrush = 4;
+
+void paint(){
+  if (startVivoPaint){startPaint();startVivoPaint = false;}
+
+  int x, y;                         // Переменные для работы с координатами нажатий
+ 
+  while(ts.dataAvailable())         // Пока имеются данные с сенсорного модуля
+  {
+    ts.read();                      // Считываем с него данные
+    x = 320 - ts.getX();                  // Считываем координату нажатия X
+    y = 240 - ts.getY();                  // Считываем координату нажатия Y
+
+    if((x!=-1) && (y!=-1)){          // Если обе координаты в положительном диапазоне (т.е. если есть нажатие)
+      //Serial.print(x);Serial.print("  ");Serial.println(y);
+      if (x < 270 - sizeBrush && x > 5 && y > 25 + sizeBrush + 2)
+        tft.fillCircle(x - 2, y - 2, sizeBrush, selectColor); // Рисуем окружность, закрашенную желтым 
+      else 
+        interfaceClickControl(x,y);
+    }
+  }
+}
+
+void startPaint(){
+  drawInterface();
+  drawSelectColorControl();
+  drawSizeBrushPanel();
+}
+
+void drawInterface(){
+  drawInscription();
+  drawColorPalette();
+  drawColorPaletteBorders();
+  drawButtons();
+  
+  tft.fillRect(0,25,320,1,16777215);
+  tft.fillRect(70,0,1,25,16777215);
+}
+
+void drawInscription(){
+  tft.setTextSize(2);               // Определяем размер шрифта для вывода на дисплей
+  tft.setCursor(5,5);              // Определяем координаты верхнего левого угла области вывода
+  tft.setTextColor(16600807);
+  tft.print("P");
+  tft.setTextColor(8191310);
+  tft.print("A");
+  tft.setTextColor(16600656);
+  tft.print("I");
+  tft.setTextColor(16643918);
+  tft.print("N");
+  tft.setTextColor(5147901);
+  tft.print("T");
+}
+
+void drawColorPalette(){
+  tft.fillRect(270,25,25,25,ILI9341_YELLOW);
+  tft.fillRect(295,25,25,25,ILI9341_RED);
+  tft.fillRect(270,50,25,25,ILI9341_GREEN);
+  tft.fillRect(295,50,25,25,ILI9341_BLUE);
+  tft.fillRect(270,75,25,25,ILI9341_PINK);
+  tft.fillRect(295,75,25,25,ILI9341_WHITE);
+  tft.fillRect(270,100,25,25,ILI9341_ORANGE);
+  tft.fillRect(295,100,25,25,ILI9341_OLIVE);
+  tft.fillRect(270,125,25,25,11994623);
+  tft.fillRect(295,125,25,25,ILI9341_DARKGREEN);
+  tft.fillRect(270,150,25,25,11216719);
+  tft.fillRect(295,150,25,25,6970061);
+  tft.fillRect(270,175,25,25,10145515);
+  tft.fillRect(295,175,25,25,ILI9341_DARKCYAN);
+  tft.fillRect(270,200,25,25,ILI9341_MAROON);
+  tft.fillRect(295,200,25,25,0);
+}
+
+void drawColorPaletteBorders(){
+  tft.fillRect(270,25,1,320,16777215);//x, y, длинна, высота, цвет
+  tft.fillRect(295,25,1,200,16777215); 
+  tft.fillRect(319,25,1,320,16777215);
+
+  for (int i = 2; i <= 9; i++){
+    tft.fillRect(270,i * 25,50,1,16777215);
+  }
+}
+
+void drawSelectColorControl(){
+  tft.fillRect(70,0,1,25,16777215);
+  tft.fillRect(71,0,25,25,selectColor);
+  tft.fillRect(96,0,1,25,16777215);
+}
+
+void drawSizeBrushPanel(){
+  tft.fillRect(96,0,1,25,16777215);
+  tft.fillRect(97,0,44,25,0);
+  tft.setTextSize(2);               // Определяем размер шрифта для вывода на дисплей
+  tft.setCursor(104,6);              // Определяем координаты верхнего левого угла области вывода
+  tft.setTextColor(16777215);
+  tft.print(String(sizeBrush));
+  tft.fillRect(141,0,1,25,16777215);
+}
+
+void drawButtons(){
+  tft.fillRect(143,0,25,25,ILI9341_WHITE);
+  tft.setTextSize(2);               // Определяем размер шрифта для вывода на дисплей
+  tft.setCursor(151,6);              // Определяем координаты верхнего левого угла области вывода
+  tft.setTextColor(0);
+  tft.print("-");
+
+  tft.fillRect(169,0,25,25,ILI9341_WHITE);
+  tft.setTextSize(2);               // Определяем размер шрифта для вывода на дисплей
+  tft.setCursor(177,6);              // Определяем координаты верхнего левого угла области вывода
+  tft.setTextColor(0);
+  tft.print("+");
+  
+  tft.fillRect(195,0,25,25,ILI9341_WHITE);
+  tft.setTextSize(2);               // Определяем размер шрифта для вывода на дисплей
+  tft.setCursor(203,6);              // Определяем координаты верхнего левого угла области вывода
+  tft.setTextColor(0);
+  tft.print("C");
+}
+
+void interfaceClickControl(int x, int y){
+  if (y > 25 && y < 50 && x > 270 && x < 295)  selectColor = ILI9341_YELLOW;
+  if (y > 25 && y < 50 && x > 295 && x < 319)  selectColor = ILI9341_RED;
+  if (y > 50 && y < 75 && x > 270 && x < 295)  selectColor = ILI9341_GREEN;
+  if (y > 50 && y < 75 && x > 295 && x < 319)  selectColor = ILI9341_BLUE;
+  if (y > 75 && y < 100 && x > 270 && x < 295) selectColor = ILI9341_PINK;
+  if (y > 75 && y < 100 && x > 295 && x < 319) selectColor = ILI9341_WHITE;
+  if (y > 100 && y < 125 && x > 270 && x < 295)selectColor = ILI9341_ORANGE;
+  if (y > 100 && y < 125 && x > 295 && x < 319)selectColor = ILI9341_OLIVE;
+  if (y > 125 && y < 150 && x > 270 && x < 295)selectColor = 11994623;
+  if (y > 125 && y < 150 && x > 295 && x < 319)selectColor = ILI9341_DARKGREEN;
+  if (y > 150 && y < 175 && x > 270 && x < 295)selectColor = 11216719;
+  if (y > 150 && y < 175 && x > 295 && x < 319)selectColor = 6970061;
+  if (y > 175 && y < 200 && x > 270 && x < 295)selectColor = 10145515;
+  if (y > 175 && y < 200 && x > 295 && x < 319)selectColor = ILI9341_DARKCYAN;
+  if (y > 200 && y < 225 && x > 270 && x < 295)selectColor = ILI9341_MAROON;
+  if (y > 200 && y < 225 && x > 295 && x < 319)selectColor = 0;
+
+  if (y > 0 && y < 25 && x > 143 && x < 168)if (sizeBrush > 1 && buttonTimer <= millis()){sizeBrush--; buttonTimer = millis() + 150; drawSizeBrushPanel();}//-
+  if (y > 0 && y < 25 && x > 169 && x < 194)if (sizeBrush < 32  && buttonTimer <= millis()){sizeBrush++; buttonTimer = millis() + 150; drawSizeBrushPanel();}//+
+  
+  if (y > 0 && y < 25 && x > 195 && x < 220)tft.fillRect(0,26,270,215,0);//C
+  drawSelectColorControl();
+}
